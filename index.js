@@ -21,6 +21,7 @@ let password="";
 let passwordLength=10;
 let checkCount=0;
 handleSlider();
+setIndicator("#ccc");
 //set circle color to grey
 
 //set password length i.e. passwordLength variable
@@ -31,17 +32,24 @@ function handleSlider()
 
     //password length variable me slider ki value daal do
    lengthDisplay.innerText=passwordLength;
+   const min = inputSlider.min;
+    const max = inputSlider.max;
+    inputSlider.style.backgroundSize = ( (passwordLength - min)*100/(max - min)) + "% 100%";
 
 }
 
-function setIndicator(color){
-    indicator.style.backgroundColor=color;
-    //shadow
+//indicator ko btaye color jitna kardo
+function setIndicator(color) {
+    indicator.style.backgroundColor = color;
+    indicator.style.boxShadow = `0px 0px 12px 1px ${color}`;
 }
+
+//min-max ke beech me ek integer dedo
 
 function getRndInteger(min,max){
     return Math.floor(Math.random()*(max-min))+min;
 }
+/* inn chaaro function me ascii value aur use karke aur getRndInteger use karke ek random character mil jayega*/
 function generateRandomNumber(){
     return getRndInteger(0,9);
 }
@@ -59,11 +67,13 @@ function generateSymbol(){
     return String.fromCharCode(getRndInteger(33,47));
 }
 
+/* password ki strength nikalo*/
 function calcStrength(){
     let hasUpper=false;
     let hasLower=false;
     let hasNum=false;
     let hasSym=false;
+
 
     if(upperCaseChecked.checked)  hasUpper=true;
     if(lowerCaseChecked.checked)  hasLower=true;
@@ -84,6 +94,7 @@ function calcStrength(){
 
 }
 
+/*copy content to clipboard*/
 async function copyContent(){
 
     try{
@@ -102,6 +113,7 @@ async function copyContent(){
        
 }
 
+/*shuffle kardo password*/
 function shufflePassword(array) {
     //Fisher Yates Method
     for (let i = array.length - 1; i > 0; i--) {
@@ -117,6 +129,7 @@ function shufflePassword(array) {
     return str;
 }
 
+/* count number of checked checkboxes*/
 function handleCheckBoxChange(){
     checkCount=0;
 
@@ -131,6 +144,9 @@ function handleCheckBoxChange(){
     }
 }
 
+
+/*checkbox array me jab bi koi change ho toh handleCheckBox bulao*/
+
 allCheckBox.forEach( (checkbox) => {
     checkbox.addEventListener('change',handleCheckBoxChange);
 })
@@ -138,11 +154,18 @@ allCheckBox.forEach( (checkbox) => {
 
 /*To Link Slider with the updated Value*/
 
+/*jab input slider ko change karenge toh ek event listener call hoga
+jo password length ko slider value barabaar karega aur since password length change 
+hua hai toh input slider call hoga*/
+
 inputSlider.addEventListener('input',(e) => {
     passwordLength=e.target.value;
 
     handleSlider();
 })
+
+
+/*agar password empty nahi hai toh clipboard me copy karo*/
 
 copyButton.addEventListener('click', () => {
     if(passwordDisplay.value)
@@ -205,4 +228,5 @@ generateBtn.addEventListener('click', () => {
 
     passwordDisplay.value=password;
 
+    calcStrength();
 })
